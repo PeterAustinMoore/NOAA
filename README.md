@@ -1,12 +1,28 @@
 # NOAA EnergyStar Connector
 
 ## Getting Started
-Install requirements:
+1. Install requirements
 
 ```
 pip install -r requirements.txt
 ```
 
+2. Add credentials
+
+In the [NOAA_EnergyStar.py](NOAA_EnergyStar.py) file, add the Energystar username and password as well as Socrata username and password (for uploading). Optionally, keep the Socrata username and password None to write out the data to CSV.
+
+3. Run the script
+
+The script itself can be run or scripted simply as
+```
+python NOAA_EnergyStar.py
+```
+
+It will retrieve the the prior and current month's data
+
+
+
+## About
 The connector has one class:
 
 1. EnergyStarClient
