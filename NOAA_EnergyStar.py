@@ -11,7 +11,7 @@ password = #ENERGYSTAR PASSWORD
 socrata_username = None#SOCRATA USERNAME
 socrata_password = None#SOCRATA PASSWORD
 socrata_dataset = "https://noaa-ocao.data.socrata.com/resource/8vm3-6zrm.json"
-client = EnergyStarClient(username, password, logging_level=logging.INFO)
+client = EnergyStarClient(username, password, logging_level=logging.DEBUG)
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
 
@@ -110,12 +110,12 @@ if __name__ == "__main__":
             logger.info("\tMerging Property Information and Usage/Cost dataset")
             df_full = dd.merge(sites, left_on="PROPERTY ID", right_on="Property ID", how="inner")
             logger.info("\tMerged {0} row(s)".format(len(df_full)))
-            if(socrata_username is not None)
+            if(socrata_username is not None):
                 # Write to Socrata
                 logger.info("Writing to Socrata...")
                 response = requests.post(socrata_dataset, data=df_full.to_json(orient="records"),auth=(socrata_username, socrata_password))
                 print(response.text)
             else:
                 # Optional Write out to CSV
-                logger.info("Writing to output.csv...")
+                logger.info("Writing to CSV...")
                 df_full.to_csv("output.csv", index=False, na_rep="0", quoting=csv.QUOTE_ALL)

@@ -339,7 +339,7 @@ class EnergyStarClient(object):
         today = datetime.datetime.now()
         data = []
         dates = [(y, m) for y in range(year,today.year) for m in range(1,13)]
-        dates.extend([(today.year, m) for m in range(1, month+1)])
+        dates.extend([(today.year, m) for m in range(month, today.month + 1)])
         for year_month in dates:
             url = "{0}/property/{1}/metrics?year={2}&month={3}&measurementSystem=EPA".format(self.domain, property_id, year_month[0], year_month[1])
             self.logger.debug("Pulling data from {0}".format(url))
