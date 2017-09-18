@@ -1,35 +1,34 @@
 from EnergyStarAPI import EnergyStarClient
 import pandas as pd
 import datetime
-import csv
+from dateutil.relativedelta import *
 import requests
 import logging
-import os
+import json
 import xml.etree.ElementTree as Et
-username = #ENERGYSTAR USERNAME
-password = #ENERGYSTAR PASSWORD
-socrata_username = None#SOCRATA USERNAME
-socrata_password = None#SOCRATA PASSWORD
-socrata_dataset = "https://noaa-ocao.data.socrata.com/resource/8vm3-6zrm.json"
-client = EnergyStarClient(username, password, logging_level=logging.DEBUG)
+with open("settings.json", 'r') as settings:
+    credentials = json.load(settings)
+    username = credentials["ES_Username"]#ENERGYSTAR USERNAME
+    password = credentials["ES_Password"]#ENERGYSTAR PASSWORD
+    socrata_username = credentials["Socrata_Username"]#SOCRATA USERNAME
+    socrata_password = credentials["Socrata_Password"]#SOCRATA PASSWORD
+
+    socrata_dataset = "https://noaa-ocao.data.socrata.com/resource/8vm3-6zrm.json"
+
+client = EnergyStarClient(username, password, logging_level=logging.INFO)
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
 
 if __name__ == "__main__":
     # Set up relative time for automation
     today = datetime.datetime.now()
-    current_month = today.month
-    current_year = today.year
-    if(current_month == 1):
-        month = 12
-        year = current_year - 1
-    else:
-        month = current_month - 1
-        year = current_year
+    start = today + relativedelta(months=-3)
+
 
     df_array = []
     logger.info("Reading in master table of contents...")
     master = pd.read_csv("https://noaa-ocao.data.socrata.com/api/views/phzv-979t/rows.csv?accessType=DOWNLOAD", dtype={"PM ID":object,"Property ID":object})
+
     property_list = master[master["PM ID"].notnull()]
 
     logger.info("Reading in site lookup table...")
@@ -53,17 +52,11 @@ if __name__ == "__main__":
             meterlist = []
         logger.info("\tRetrieved {0} Meter(s)".format(len(meterlist)))
 
-        # If there are no meter lists, we cannot have to get GHG data
-        if(len(meterlist) > 0):
-            logger.info("\tGetting GHG Data...")
-            greenhousegas = client.get_metric(row["PM ID"],"totalGHGEmissions",year,month,1, metric_name="GHG")
-            ghg_df = pd.DataFrame(greenhousegas)
-
         for meter in meterlist:
             # Catch bad meter URLs
             logger.info("\tReading data for {0}:{1}".format(meter[0], meter[1]))
             try:
-                usage = client.get_usage_and_cost(meter[0], year, month, 1)
+                usage = client.get_usage_and_cost(meter[0], start.year, start.month, 1)
             except requests.exceptions.HTTPError:
                 usage = []
             df = pd.DataFrame(usage)
@@ -97,18 +90,10 @@ if __name__ == "__main__":
             df_merged["Fiscal Period"] = df_merged["DATE"].map(lambda x: x[5:7])
             df_merged["ROWID"] = df_merged["DATE"] + df_merged["METER ID"].astype(str)
 
-            # Merge greenhousegas data by month
-            df_merged["K"] = df_merged["DATE"].map(lambda x: x[0:7])
-            logger.debug("\tGHG Dataset: {0} rows".format(len(ghg_df)))
-            logger.debug("\tUsage and Cost dataset: {0} rows".format(len(df_merged)))
-            logger.info("\tMerging GHG and Usage/Cost datasets")
-            dd = df_merged.merge(ghg_df, on=["PM ID","K"])
-            del dd["K"]
-            logger.info("\tMerged {0} row(s)".format(len(dd)))
-
             # Merge Property Data Information
             logger.info("\tMerging Property Information and Usage/Cost dataset")
-            df_full = dd.merge(sites, left_on="PROPERTY ID", right_on="Property ID", how="inner")
+            df_full = df_merged.merge(sites, left_on="PROPERTY ID", right_on="Property ID", how="inner")
+            df_full["GHG"] = ""
             logger.info("\tMerged {0} row(s)".format(len(df_full)))
             if(socrata_username is not None):
                 # Write to Socrata

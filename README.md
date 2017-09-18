@@ -9,7 +9,7 @@ pip install -r requirements.txt
 
 2. Add credentials
 
-In the [NOAA_EnergyStar.py](NOAA_EnergyStar.py) file, add the Energystar username and password as well as Socrata username and password (for uploading). Optionally, keep the Socrata username and password None to write out the data to CSV.
+In the [settings.json](settings.json) file, add the Energystar username and password as well as Socrata username and password (for uploading). Optionally, keep the Socrata username and password None to write out the data to CSV.
 
 3. Run the script
 
