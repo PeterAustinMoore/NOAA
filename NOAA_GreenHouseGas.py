@@ -1,7 +1,7 @@
 from EnergyStarAPI import EnergyStarClient
 import pandas as pd
 import json
-with open("settings.json", 'r') as settings:
+with open(".settings.json", 'r') as settings:
     credentials = json.load(settings)
     username = credentials["ES_Username"]#ENERGYSTAR USERNAME
     password = credentials["ES_Password"]#ENERGYSTAR PASSWORD
