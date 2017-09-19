@@ -50,7 +50,7 @@ if __name__ == "__main__":
         logger.info("\tGetting Meter List...")
         try:
             meterlist = client.get_meter_list(row["PM ID"])
-        except requests.exceptions.HTTPError:
+        except requests.exceptions.HTTPError as e:
             meterlist = []
         logger.info("\tRetrieved {0} Meter(s)".format(len(meterlist)))
 

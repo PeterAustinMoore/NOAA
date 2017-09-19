@@ -28,10 +28,6 @@ if __name__ == "__main__":
     property_list.columns = ["PM ID", "Property Name"]
     property_list.to_csv("CurrentEnergyStarProperties.csv", index=False)
 
-    # Remove First and Last Rows
-    rpmd = rpmd[1:]
-    rpmd = rpmd[:-1]
-
     # Overwrite the Current Sites dataset on Socrata
     response = requests.post(rpmd_url, data=rpmd.to_json(orient="records"), auth=(socrata_username, socrata_password))
     print(response.json())
@@ -40,18 +36,9 @@ if __name__ == "__main__":
     lookup["FILE"] = "LOOKUP"
     rpmd["FILE"] = "RPMD"
 
-    def ApplicableBuildings(row):
-        if(row["Property Status"] != "Active"):
-            return "N"
-        if(row["Legal Interest"] == "Owned"):
-            if(rpw["Complex Name"] != "DAVID SKAGGS RESEARCH CENTER"):
-                return "GO"
-        elif(row["Bureau/Line Office"] == "NWS"):
-            return ""
-
     # Keep Certain Columns to Analyze
-    lookup_cols_to_keep = ["FILE","PM ID","Property ID","Property Name","Property Type","Address","City","State","Zip"]
-    rpmd_cols_to_keep = ["FILE","Property ID","Property Name","Property Type","Address","City","State","Zip"]
+    lookup_cols_to_keep = ["FILE","PM ID","Property ID","Property Name","Property Type","Address","City","State","Zip","Category"]
+    rpmd_cols_to_keep = ["FILE","Property ID","Property Name","Property Type","Address","City","State","Zip","Category"]
 
     lookup = lookup[lookup_cols_to_keep]
     rpmd = rpmd[rpmd_cols_to_keep]
