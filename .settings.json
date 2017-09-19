@@ -3,7 +3,7 @@
   "ES_Password":null,
   "Socrata_Username":null,
   "Socrata_Password":null,
-  "EnergyStarCostUsageDataset":"https://noaa-ocao.data.socrata.com/resource/8vm3-6zrm.json",
-  "Table_of_Contents":"https://noaa-ocao.data.socrata.com/api/views/phzv-979t/rows.csv?accessType=DOWNLOAD",
-  "All_Properties":"https://noaa-ocao.data.socrata.com/api/views/8wgy-ye8p/rows.csv?accessType=DOWNLOAD"
+  "EnergyStarCostUsageDataset":"8vm3-6zrm",
+  "Table_of_Contents":"phzv-979t",
+  "All_Properties":"8wgy-ye8p"
 }

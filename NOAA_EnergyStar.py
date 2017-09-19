@@ -13,9 +13,9 @@ with open(".settings.json", 'r') as f:
     socrata_username = settings["Socrata_Username"]#SOCRATA USERNAME
     socrata_password = settings["Socrata_Password"]#SOCRATA PASSWORD
 
-    socrata_dataset = settings["EnergyStarCostUsageDataset"]
-    table_of_contents = settings["Table_of_Contents"]
-    all_properties = settings["All_Properties"]
+    socrata_dataset = "https://noaa-ocao.data.socrata.com/resource/{0}.json".format(settings["EnergyStarCostUsageDataset"])
+    table_of_contents = "https://noaa-ocao.data.socrata.com/api/views/{0}/rows.csv?accessType=DOWNLOAD".format(settings["Table_of_Contents"])
+    all_properties = "https://noaa-ocao.data.socrata.com/api/views/{0}/rows.csv?accessType=DOWNLOAD".format(settings["All_Properties"])
 
 client = EnergyStarClient(username, password, logging_level=logging.INFO)
 logger = logging.getLogger(__name__)

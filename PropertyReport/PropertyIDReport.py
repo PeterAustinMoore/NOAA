@@ -13,7 +13,8 @@ with open("../.settings.json", 'r') as f:
     password = settings["ES_Password"]#ENERGYSTAR PASSWORD
     socrata_username = settings["Socrata_Username"]#SOCRATA USERNAME
     socrata_password = settings["Socrata_Password"]#SOCRATA PASSWORD
-    table_of_contents = settings["Table_of_Contents"]
+    table_of_contents = "https://noaa-ocao.data.socrata.com/api/views/{0}/rows.csv?accessType=DOWNLOAD".format(settings["Table_of_Contents"])
+    rpmd_url = "https://noaa-ocao.data.socrata.com/resource/{0}.json".format(settings["All_Properties"])
 client = EnergyStarClient(username, password)
 
 if __name__ == "__main__":
@@ -32,7 +33,6 @@ if __name__ == "__main__":
     rpmd = rpmd[:-1]
 
     # Overwrite the Current Sites dataset on Socrata
-    rpmd_url = "https://noaa-ocao.data.socrata.com/resource/8wgy-ye8p.json"
     response = requests.post(rpmd_url, data=rpmd.to_json(orient="records"), auth=(socrata_username, socrata_password))
     print(response.json())
 
