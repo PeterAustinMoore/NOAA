@@ -19,7 +19,8 @@ class EnergyStarClient(object):
         logging.basicConfig(level=logging_level)
         logging.getLogger("requests").setLevel(logging.WARNING)
         self.logger = logging.getLogger(__name__)
-
+    def __str__(self):
+        return
     def get_account_info(self):
         """
         Get Account information for the current user
