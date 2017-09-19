@@ -6,14 +6,16 @@ import requests
 import logging
 import json
 import xml.etree.ElementTree as Et
-with open(".settings.json", 'r') as settings:
-    credentials = json.load(settings)
-    username = credentials["ES_Username"]#ENERGYSTAR USERNAME
-    password = credentials["ES_Password"]#ENERGYSTAR PASSWORD
-    socrata_username = credentials["Socrata_Username"]#SOCRATA USERNAME
-    socrata_password = credentials["Socrata_Password"]#SOCRATA PASSWORD
+with open(".settings.json", 'r') as f:
+    settings = json.load(f)
+    username = settings["ES_Username"]#ENERGYSTAR USERNAME
+    password = settings["ES_Password"]#ENERGYSTAR PASSWORD
+    socrata_username = settings["Socrata_Username"]#SOCRATA USERNAME
+    socrata_password = settings["Socrata_Password"]#SOCRATA PASSWORD
 
-    socrata_dataset = "https://noaa-ocao.data.socrata.com/resource/8vm3-6zrm.json"
+    socrata_dataset = settings["EnergyStarCostUsageDataset"]
+    table_of_contents = settings["Table_of_Contents"]
+    all_properties = settings["All_Properties"]
 
 client = EnergyStarClient(username, password, logging_level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -27,12 +29,12 @@ if __name__ == "__main__":
 
     df_array = []
     logger.info("Reading in master table of contents...")
-    master = pd.read_csv("https://noaa-ocao.data.socrata.com/api/views/phzv-979t/rows.csv?accessType=DOWNLOAD", dtype={"PM ID":object,"Property ID":object})
+    master = pd.read_csv(table_of_contents, dtype={"PM ID":object,"Property ID":object})
 
     property_list = master[master["PM ID"].notnull()]
 
     logger.info("Reading in site lookup table...")
-    sites = pd.read_csv("https://noaa-ocao.data.socrata.com/api/views/8wgy-ye8p/rows.csv?accessType=DOWNLOAD", dtype={"PM ID":object,"Property ID":object})
+    sites = pd.read_csv(, dtype={"PM ID":object,"Property ID":object})
 
     ### PURE API
     # account_info = client.get_account_info()

@@ -1,7 +1,7 @@
 .DS_Store
 
 # Settings file
-
+.settings.json
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
@@ -12,7 +12,7 @@ __pycache__/
 *.so
 
 # Distribution / packaging
-.Python
+.Python 
 env/
 build/
 develop-eggs/

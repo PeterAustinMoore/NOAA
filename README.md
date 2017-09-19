@@ -18,11 +18,16 @@ The script itself can be run or scripted simply as
 python NOAA_EnergyStar.py
 ```
 
-It will retrieve the the prior and current month's data
+It will retrieve the the prior 3 month's worth data
+
+## References
+
+The script uses two datasets to collect data:
+1. [The Master Portfolio Manager Dataset](https://noaa-ocao.data.socrata.com/d/phzv-979t) - Which contains the portfolio manager ID (PM ID) numbers for each property to collect usage and cost data for as well as the property ID number from RPMD which is used to join the data to the RPMD site information (#2)
+2. [The RPMD Site Data](https://noaa-ocao.data.socrata.com/d/8wgy-ye8p) - Contains information pertaining to each site, such as area, address, bureau and other information. This is joined by Property ID field.
 
 
-
-## About
+## Usage
 The connector has one class:
 
 1. EnergyStarClient

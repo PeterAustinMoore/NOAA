@@ -7,20 +7,19 @@ from EnergyStarAPI import EnergyStarClient
 import pandas as pd
 import requests
 import json
-with open("../.settings.json", 'r') as settings:
-    credentials = json.load(settings)
-    username = credentials["ES_Username"]#ENERGYSTAR USERNAME
-    password = credentials["ES_Password"]#ENERGYSTAR PASSWORD
-    socrata_username = credentials["Socrata_Username"]#SOCRATA USERNAME
-    socrata_password = credentials["Socrata_Password"]#SOCRATA PASSWORD
-
+with open("../.settings.json", 'r') as f:
+    settings = json.load(f)
+    username = settings["ES_Username"]#ENERGYSTAR USERNAME
+    password = settings["ES_Password"]#ENERGYSTAR PASSWORD
+    socrata_username = settings["Socrata_Username"]#SOCRATA USERNAME
+    socrata_password = settings["Socrata_Password"]#SOCRATA PASSWORD
+    table_of_contents = settings["Table_of_Contents"]
 client = EnergyStarClient(username, password)
 
 if __name__ == "__main__":
     RPMD_DATA = "Properties.xls"
-    CURRENT_LOOKUP_TABLE = "https://noaa-ocao.data.socrata.com/api/views/phzv-979t/rows.csv?accessType=DOWNLOAD"
     rpmd = pd.read_excel(RPMD_DATA)
-    lookup = pd.read_csv(CURRENT_LOOKUP_TABLE)
+    lookup = pd.read_csv(table_of_contents)
 
     account_info = client.get_account_info()
     energystar_property_list = client.get_propery_list(account_info["account"]["id"]["$"])
@@ -40,6 +39,15 @@ if __name__ == "__main__":
     # Delineate the rpmd and lookup files
     lookup["FILE"] = "LOOKUP"
     rpmd["FILE"] = "RPMD"
+
+    def ApplicableBuildings(row):
+        if(row["Property Status"] != "Active"):
+            return "N"
+        if(row["Legal Interest"] == "Owned"):
+            if(rpw["Complex Name"] != "DAVID SKAGGS RESEARCH CENTER"):
+                return "GO"
+        elif(row["Bureau/Line Office"] == "NWS"):
+            return ""
 
     # Keep Certain Columns to Analyze
     lookup_cols_to_keep = ["FILE","PM ID","Property ID","Property Name","Property Type","Address","City","State","Zip"]
