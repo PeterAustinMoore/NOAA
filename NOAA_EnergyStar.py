@@ -34,7 +34,7 @@ if __name__ == "__main__":
     property_list = master[master["PM ID"].notnull()]
 
     logger.info("Reading in site lookup table...")
-    sites = pd.read_csv(, dtype={"PM ID":object,"Property ID":object})
+    sites = pd.read_csv(all_properties, dtype={"PM ID":object,"Property ID":object})
 
     ### PURE API
     # account_info = client.get_account_info()
