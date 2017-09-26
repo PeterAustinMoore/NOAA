@@ -29,7 +29,7 @@ if __name__ == "__main__":
     property_list.to_csv("CurrentEnergyStarProperties.csv", index=False)
 
     # Overwrite the Current Sites dataset on Socrata
-    response = requests.post(rpmd_url, data=rpmd.to_json(orient="records"), auth=(socrata_username, socrata_password))
+    response = requests.put(rpmd_url, data=rpmd.to_json(orient="records"), auth=(socrata_username, socrata_password))
     print(response.json())
 
     # Delineate the rpmd and lookup files
